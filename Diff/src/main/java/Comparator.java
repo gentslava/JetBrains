@@ -8,7 +8,7 @@ public class Comparator {
     protected Comparator(boolean debug) {
         if (debug) System.out.println("\tКонструктор");
         this.debug = debug;
-        HTML = "<html>\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<link rel=\"stylesheet\" href=\"./style.css\">\n\t\t<title>File Comparator</title>\n\t</head>\n\t<body>\n";
+        HTML = "<html>\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<link rel=\"stylesheet\" href=\"./style.css\">\n\t\t<title>File Comparator</title>\n\t</head>\n";
     }
 
     private int[][] fill_dyn_matrix(List<String> str1, List<String> str2) {
@@ -122,6 +122,7 @@ public class Comparator {
     }
 
     protected void compare(List<String> files) throws Exception {
+        HTML += "\t<body>\n";
         for (int i = 0; i < files.size() - 1; i++) {
             HTML += "\t\t<div class=\"compare\">";
             LCS(files.get(i), files.get(i+1));
@@ -131,7 +132,7 @@ public class Comparator {
         String folder = "Result";
         File dir = new File(folder);
         dir.mkdir();
-        PrintStream out = new PrintStream(new FileOutputStream(folder + "\\" + "filename.html"));
+        PrintStream out = new PrintStream(new FileOutputStream(folder + "\\" + "diff.html"));
         out.print(HTML);
 
         if (debug) System.out.println("\tВсе файлы прошли сравнение");
