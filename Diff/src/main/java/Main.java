@@ -1,27 +1,26 @@
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class Main {
+    static Logger logger;
     public static void main(String[] args) {
-        boolean debug = true;
         List<String> files = new ArrayList<String>();
         files.add("./files/style.css");
         files.add("./files/style — копия.css");
         try {
-            Date date = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-            if (debug) System.out.println(formatter.format(date) + " - Начало сравнения файлов");
-            Comparator my_comparator = new Comparator(debug);
+            FileInputStream ins = new FileInputStream("./logs/log.config");
+            LogManager.getLogManager().readConfiguration(ins);
+            logger = Logger.getLogger(Main.class.getName());
+            logger.log(Level.INFO, "Start of files comparing");
+            Comparator my_comparator = new Comparator(logger);
             my_comparator.compare(files);
-            date = new Date();
-            if (debug) System.out.println(formatter.format(date) + " - Сравнение завершено");
+            logger.log(Level.INFO, "Comparing finished");
         } catch (Exception e) {
-            if (debug) {
-                Date date = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-                System.out.println(formatter.format(date) + " - Сравнение завершено с ошибкой:");
-                e.printStackTrace();
-            }
+            logger.log(Level.WARNING, "Comparing finished with exception:", e);
         }
     }
 }

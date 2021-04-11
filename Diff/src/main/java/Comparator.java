@@ -1,13 +1,16 @@
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class Comparator {
-    private boolean debug;
+    static Logger logger;
     String HTML;
 
-    protected Comparator(boolean debug) {
-        if (debug) System.out.println("\tКонструктор");
-        this.debug = debug;
+    protected Comparator(Logger logger) throws IOException {
+        this.logger = logger;
+        this.logger.log(Level.INFO, "Constructor");
         HTML = "<html>\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<link rel=\"stylesheet\" href=\"./style.css\">\n\t\t<title>File Comparator</title>\n\t</head>\n";
     }
 
@@ -25,18 +28,16 @@ public class Comparator {
             }
         }
 
-        if (debug) {
-            System.out.println("\t\t\tМатрица:");
-            for (int i = 0; i < lines; i++) {
-                System.out.print("\t\t\t");
-                for (int j = 0; j < columns; j++) {
-                    System.out.print(matrix[i][j]);
-                    if (j < columns - 1) System.out.print("\t");
-                }
-                System.out.println();
+        logger.log(Level.INFO, "Matrix:");
+        String matrix_str = "";
+        for (int i = 0; i < lines; i++) {
+            matrix_str += "\n";
+            for (int j = 0; j < columns; j++) {
+                matrix_str += (matrix[i][j]);
+                if (j < columns - 1) matrix_str += "\t";
             }
-            System.out.println();
         }
+        logger.log(Level.INFO, matrix_str);
 
         return matrix;
     }
@@ -83,17 +84,17 @@ public class Comparator {
                 if (count == 0) {
                     res1.add("<p style=\"background-color:#03a9f4;\">"+str1+"</p>");
                     res2.add("<p style=\"background-color:#03a9f4;\">"+str2+"</p>");
-                    if (debug) System.out.println("\t\t\tChanged string: \"" + str1 + "\" on \"" + str2 + "\"");
+                    logger.log(Level.INFO, "Changed string: \"" + str1 + "\" on \"" + str2 + "\"");
                 }
                 else if (count > 0) {
                     res1.add("<p style=\"background-color:#b0b0b0;\">"+str1+"</p>");
                     res2.add("<p></p>");
-                    if (debug) System.out.println("\t\t\tRemoved \"" + str1 + "\" string from 1 file");
+                    logger.log(Level.INFO, "Removed \"" + str1 + "\" string from 1 file");
                 }
                 else {
                     res1.add("<p></p>");
                     res2.add("<p style=\"background-color:#03f403;\">"+str2+"</p>");
-                    if (debug) System.out.println("\t\t\tAdded \"" + str2 + "\" string to 2 file");
+                    logger.log(Level.INFO, "Added \"" + str2 + "\" string to 2 file");
                 }
                 change = false;
             }
@@ -101,24 +102,19 @@ public class Comparator {
 
         Collections.reverse(res1);
         Collections.reverse(res2);
-        if (debug) {
-            System.out.println();
-            System.out.println("\t\tExit file parts:");
-        }
+        logger.log(Level.INFO, "Exit file parts:");
         HTML += "\t\t\t<div class=\"file\">";
         for (i = 0; i < res1.size(); i++) {
             HTML += res1.get(i);
-            if (debug) System.out.println("\t\t\t" + res1.get(i));
+            logger.log(Level.INFO, "\t\t\t" + res1.get(i));
         }
         HTML += "\t\t\t</div>";
-        if (debug) System.out.println();
         HTML += "\t\t\t<div class=\"file\">";
         for (j = 0; j < res2.size(); j++) {
             HTML += res2.get(j);
-            System.out.println("\t\t\t" + res2.get(j));
+            logger.log(Level.INFO, "\t\t\t" + res2.get(j));
         }
         HTML += "\t\t\t</div>";
-        if (debug) System.out.println();
     }
 
     protected void compare(List<String> files) throws Exception {
@@ -135,6 +131,6 @@ public class Comparator {
         PrintStream out = new PrintStream(new FileOutputStream(folder + "\\" + "diff.html"));
         out.print(HTML);
 
-        if (debug) System.out.println("\tВсе файлы прошли сравнение");
+        logger.log(Level.INFO, "All files were compared");
     }
 }
